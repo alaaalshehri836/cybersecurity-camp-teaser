@@ -1,0 +1,27 @@
+{
+  "name": "cybersecurity-camp-teaser",
+  "version": "1.0.0",
+  "description": "Cinematic real-time teaser (Three.js · GSAP · Web Audio) — There is a message not meant for everyone.",
+  "scripts": {
+    "build": "node build.mjs",
+    "build:dev": "node build.mjs --dev",
+    "preview": "npx http-server dist -c-1",
+    "export:audio": "node tools/export/render.js --audio exports/.frames/audio.wav 60",
+    "qa:desktop": "node tools/qa/shootm.js tools/qa 13,41,57.7 1920 1080 0",
+    "qa:mobile": "node tools/qa/playm.js 390 844"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "three": "^0.170.0",
+    "gsap": "^3.15.1"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans-arabic": "^5.3.0"
+  }
+}

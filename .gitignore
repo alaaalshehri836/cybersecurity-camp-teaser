@@ -1,0 +1,19 @@
+# dependencies & build output (Vercel runs `npm run build`)
+node_modules/
+dist/
+
+# render intermediates, QA captures and exported videos
+exports/
+*.mp4
+*.wav
+tools/**/*.png
+
+# environment & OS / editor noise
+.env
+.env.*
+.vercel/
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
