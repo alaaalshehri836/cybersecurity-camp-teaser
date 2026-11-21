@@ -17,7 +17,7 @@
   },
   "private": true,
   "engines": {
-    "node": ">=18"
+    "node": "22.x"
   },
   "devDependencies": {
     "esbuild": "^0.28.2",
