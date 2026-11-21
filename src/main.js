@@ -55,18 +55,26 @@ async function boot() {
   let playing = false, startedAt = 0, ended = false, lastAct = -1, lastT = -1, fallbackClock = false;
   const still = params.has('still') ? +params.get('still') : null;
 
-  let dynScale = 1;
+  // The canvas is sized to the *visible* viewport in exact CSS pixels (not 100vh/100dvh, which on iOS Safari < 15.4
+  // and in in-app browsers include the hidden toolbar → stretched picture, cropped bottom). Picture and box always match.
+  let dynScale = 1, VW = 0, VH = 0;
+  const viewport = () => [Math.max(1, Math.round(innerWidth)), Math.max(1, Math.round(innerHeight))];
   function size() {
-    const w = innerWidth, h = innerHeight;
-    const dpr = Math.min(devicePixelRatio || 1, isMobile ? 1.25 : 1.5, 2600 / Math.max(w, h)) * dynScale;
-    renderer.setPixelRatio(dpr); renderer.setSize(w, h, false);
+    const [w, h] = viewport(); VW = w; VH = h;
+    document.documentElement.style.setProperty('--app-h', h + 'px');
+    const dpr = Math.min(devicePixelRatio || 1, isMobile ? 1.6 : 1.5, 2600 / Math.max(w, h)) * dynScale;
+    renderer.setPixelRatio(dpr); renderer.setSize(w, h, true);
     post.setSize(w, h, dpr);
   }
-  addEventListener('resize', size); size();
+  const resizeSoon = () => { size(); setTimeout(size, 250); setTimeout(size, 700); };   // iOS settles its toolbar late
+  addEventListener('resize', size); addEventListener('orientationchange', resizeSoon);
+  if (window.visualViewport) visualViewport.addEventListener('resize', size);
+  size();
 
   const cutsAll = acts.flatMap((a) => a.cuts || []);
   function frame(t) {
-    const aspect = innerWidth / innerHeight;
+    { const [w, h] = viewport(); if (w !== VW || h !== VH) size(); }   // catch silent viewport changes (iOS toolbar)
+    const aspect = VW / VH;
     if (t >= T.END) { post.render(null, null, true); return; }
     tl.time(Math.max(0, t), true);
     let ai = acts.findIndex((a) => t >= a.start && t < a.end); if (ai < 0) ai = 0;
